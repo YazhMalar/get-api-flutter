@@ -83,10 +83,10 @@ class _HomePageState extends State<HomePage> {
           child: CircularProgressIndicator(color: Colors.black),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => RemoteServices().postData(),
-      //   child: Icon(Icons.ac_unit_rounded),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.ac_unit_rounded),
+      ),
     );
   }
 }
