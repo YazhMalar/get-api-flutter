@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import '../models/post.dart';
 import '../services/remote_services.dart';
 
@@ -13,7 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Post>? post;
+  List<Post>? post = [];
   var isLoaded = false;
 
   @override
@@ -35,7 +34,16 @@ class _HomePageState extends State<HomePage> {
   postData() async {
     try {
       var response = await RemoteServices().postData();
-    } catch (e) {}
+      Map<String, dynamic> customResponse = jsonDecode(response);
+      customResponse["postId"] = int.parse(customResponse["postId"]);
+      var newPost = Post.fromJson(customResponse);
+      setState(() {
+        print(post![0]);
+        post!.insert(0, newPost);
+      });
+    } catch (e) {
+      print("error: $e");
+    }
   }
 
   @override
@@ -93,7 +101,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => postData,
+        onPressed: () => postData(),
         child: Icon(Icons.ac_unit_sharp),
       ),
     );

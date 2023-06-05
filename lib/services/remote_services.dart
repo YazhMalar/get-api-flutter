@@ -1,6 +1,8 @@
 import '../models/post.dart';
 import 'package:http/http.dart' as http;
 
+var i = 0;
+
 class RemoteServices {
   Future<List<Post>?> getPost() async {
     var Client = http.Client();
@@ -13,18 +15,23 @@ class RemoteServices {
     return null;
   }
 
-  Future<List<Post>?> postData() async {
+  postData() async {
     try {
       var uri = Uri.parse('https://jsonplaceholder.typicode.com/comments');
-      var response = await http.post(uri, body: {
-        "postId": 1,
-        "name": "yazhini",
-        "email": "yazh@gamil.com",
-        "body": "heloo all"
+      dynamic response = await http.post(uri, body: {
+        "postId": (i++).toString(),
+        "email": "Yazhini@gmail.com",
+        "body": "dodge challenger",
+        "name": "Yazhini",
       });
+      print(response.statusCode);
       print(response.body);
+      if (response.statusCode == 201) {
+        print(response.body.runtimeType);
+        return response.body;
+      }
     } catch (e) {
-      print("error: $e");
+      print("error $e");
     }
   }
 }
