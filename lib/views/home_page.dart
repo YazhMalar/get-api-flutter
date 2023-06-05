@@ -20,6 +20,18 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     getData();
+    final post = Post(
+      postId: 2,
+      name: "iniyan",
+      email: "kausik@gmail.tamil",
+      body: "hello there",
+      id: 510,
+    );
+    final json = post.toJson();
+    print('JSON: ${post.toJson()}');
+
+    final newPost = Post.fromJson(json);
+    print('POST: $newPost');
   }
 
   getData() async {
