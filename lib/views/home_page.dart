@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import '../models/post.dart';
-import '../services/remote_services.dart';
+import 'package:http/http.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,23 +11,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Post>? post;
   var isLoaded = false;
-
+  List _postList = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    fetchPosts();
   }
 
-  getData() async {
-    post = (await RemoteServices().getPost())!;
-    if (post != null) {
+  var url = "https://jsonplaceholder.typicode.com/posts";
+  void fetchPosts() async {
+    try {
+      var response = await get(Uri.parse(url));
+      var jsonData = jsonDecode(response.body);
       setState(() {
+        _postList = jsonData;
         isLoaded = true;
       });
-    }
+    } catch (e) {}
   }
 
   @override
@@ -34,13 +37,14 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Posts"),
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.blueAccent,
       ),
       body: Visibility(
         visible: isLoaded,
         child: ListView.builder(
           padding: EdgeInsets.only(top: 20),
           itemBuilder: (context, index) {
+            var post = _postList[index];
             return Container(
               padding:
                   EdgeInsets.only(left: 20).add(EdgeInsets.only(bottom: 5)),
@@ -51,20 +55,20 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 10),
-                        child: Text(post![index].id.toString()),
+                        child: Text("${post["id"]}"),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            post![index].email,
+                            post["title"],
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            post![index].body,
+                            post["body"],
                             style: TextStyle(
                               fontSize: 6,
                             ),
@@ -77,17 +81,10 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           },
-          itemCount: post?.length,
+          itemCount: _postList.length,
         ),
         replacement: Center(
           child: CircularProgressIndicator(color: Colors.black),
-        ),
-      ),
-      floatingActionButton: GestureDetector(
-        onDoubleTap: () => getData(),
-        child: FloatingActionButton(
-          onPressed: () => RemoteServices().postData(),
-          child: Icon(Icons.ac_unit_rounded),
         ),
       ),
     );
