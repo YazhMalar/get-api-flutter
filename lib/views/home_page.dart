@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
     print('JSON: ${post.toJson()}');
 
     final newPost = Post.fromJson(json);
-    print('POST: $newPost');
+    print(newPost);
   }
 
   getData() async {
@@ -50,7 +50,6 @@ class _HomePageState extends State<HomePage> {
       customResponse["postId"] = int.parse(customResponse["postId"]);
       var newPost = Post.fromJson(customResponse);
       setState(() {
-        print(post![0]);
         post!.insert(0, newPost);
       });
     } catch (e) {
