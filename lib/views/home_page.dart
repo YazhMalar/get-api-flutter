@@ -20,6 +20,7 @@ class _HomePageState extends State<HomePage> {
     fetchPosts();
   }
 
+  var i = 0;
   var url = "https://jsonplaceholder.typicode.com/posts";
   void fetchPosts() async {
     try {
@@ -30,6 +31,28 @@ class _HomePageState extends State<HomePage> {
         isLoaded = true;
       });
     } catch (e) {}
+  }
+
+  void postData() async {
+    try {
+      var response = await post(Uri.parse(url), body: {
+        "userid": i.toString(),
+        "title": "Yazhini",
+        "body": "dodge challenger",
+      });
+      print(response.statusCode);
+      print(response.body);
+      Map<String, dynamic> customResponse = jsonDecode(response.body);
+      // customResponse["userid"] = i;
+
+      setState(() {
+        _postList.insert(0, customResponse);
+        i++;
+        fetchPosts();
+      });
+    } catch (e) {
+      print("error $e");
+    }
   }
 
   @override
@@ -55,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 10),
-                        child: Text("${post["id"]}"),
+                        child: Text("${post["id"].toString()}"),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,6 +109,10 @@ class _HomePageState extends State<HomePage> {
         replacement: Center(
           child: CircularProgressIndicator(color: Colors.black),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: postData,
+        child: Icon(Icons.ac_unit_rounded),
       ),
     );
   }
