@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import '../models/post.dart';
 import '../services/remote_services.dart';
 
@@ -27,6 +30,12 @@ class _HomePageState extends State<HomePage> {
         isLoaded = true;
       });
     }
+  }
+
+  postData() async {
+    try {
+      var response = await RemoteServices().postData();
+    } catch (e) {}
   }
 
   @override
@@ -82,6 +91,10 @@ class _HomePageState extends State<HomePage> {
         replacement: Center(
           child: CircularProgressIndicator(color: Colors.black),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => postData,
+        child: Icon(Icons.ac_unit_sharp),
       ),
     );
   }

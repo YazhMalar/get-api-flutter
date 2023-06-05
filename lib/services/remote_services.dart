@@ -12,4 +12,19 @@ class RemoteServices {
     }
     return null;
   }
+
+  Future<List<Post>?> postData() async {
+    try {
+      var uri = Uri.parse('https://jsonplaceholder.typicode.com/comments');
+      var response = await http.post(uri, body: {
+        "postId": 1,
+        "name": "yazhini",
+        "email": "yazh@gamil.com",
+        "body": "heloo all"
+      });
+      print(response.body);
+    } catch (e) {
+      print("error: $e");
+    }
+  }
 }
