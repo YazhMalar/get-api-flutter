@@ -8,9 +8,12 @@ import 'package:http/http.dart' as http;
 
 const String baseUrl = 'https://www.reddit.com/r/popular/new.json?count=25';
 
-Future<List<Post>> getReddit() async {
-  final response = await http.get(Uri.parse(baseUrl));
-
+final int _limit = 10;
+Future<List<Post>> getReddit(int _page) async {
+  var uri = "$baseUrl&page=$_page&limit=$_limit";
+  print(uri);
+  final response = await http.get(Uri.parse(uri));
+  print(uri);
   Reddit? reddit = serializers.deserializeWith(
       Reddit.serializer, json.decode(response.body));
 
