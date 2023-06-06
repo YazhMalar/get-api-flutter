@@ -17,8 +17,8 @@ class RemoteServices {
 
   postData() async {
     try {
-      var uri = Uri.parse('https://jsonplaceholder.typicode.com/comments');
-      dynamic response = await http.post(uri, body: {
+      var url = 'https://jsonplaceholder.typicode.com/comments';
+      dynamic response = await http.post(Uri.parse(url), body: {
         "postId": (i++).toString(),
         "email": "Yazhini@gmail.com",
         "body": "dodge challenger",
