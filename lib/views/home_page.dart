@@ -27,6 +27,8 @@ class _HomePageState extends State<HomePage> {
       body: "hello there",
       id: 510,
     );
+    post.body = "";
+
     final json = post.toJson();
     print('JSON: ${post.toJson()}');
 
