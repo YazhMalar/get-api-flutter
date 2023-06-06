@@ -55,7 +55,7 @@ class MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reddit Top'),
+        title: Text('Posts'),
       ),
       body: ListView(
         shrinkWrap: true,

@@ -67,6 +67,7 @@ class _HomePageState extends State<HomePage> {
       body: Visibility(
         visible: isLoaded,
         child: ListView.builder(
+          shrinkWrap: true,
           padding: EdgeInsets.only(top: 20),
           itemBuilder: (context, index) {
             return Container(
