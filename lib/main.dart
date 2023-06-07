@@ -81,8 +81,6 @@ class MyHomePageState extends State<MyHomePage> {
           itemCount: _loadMore ? _posts.length + 1 : _posts.length,
           itemBuilder: (BuildContext context, int index) {
             Post post = _posts[index];
-            print(
-                "loadmore: $_loadMore ---- index: $index ---- Post lenght: ${_posts.length}");
             if (index < _posts.length) {
               return ListTile(
                 leading: CircleAvatar(
@@ -97,7 +95,6 @@ class MyHomePageState extends State<MyHomePage> {
                 ),
               );
             } else {
-              print('called');
               return Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Center(child: CircularProgressIndicator()),
