@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './models/reddit.dart';
 import './models/api.dart';
+import 'models/postss_bloc.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,6 +29,7 @@ class MyHomePageState extends State<MyHomePage> {
   int _page = 0;
   bool _loadMore = false;
   bool _firstload = false;
+  final postBloc = PostBloc();
   @override
   void dispose() {
     _scrollController.removeListener(_scrollListener);
@@ -39,16 +41,16 @@ class MyHomePageState extends State<MyHomePage> {
     if (_loadMore) return;
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      _page++;
       setState(() {
         _loadMore = true;
       });
-
-      getReddit(_page).then((posts) {
-        setState(() {
-          _posts = _posts + posts;
-        });
-      });
+      postBloc.eventSink.add(PostAction.Fetch);
+      // _page++;
+      // getReddit().then((posts) {
+      // setState(() {
+      //   _posts = _posts + posts;
+      // });
+      // });
       setState(() {
         _loadMore = false;
       });
@@ -59,12 +61,13 @@ class MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-    getReddit(_page).then((posts) {
-      setState(() {
-        _firstload = true;
-        _posts = _posts + posts;
-      });
+    postBloc.eventSink.add(PostAction.Fetch);
+    // getReddit().then((posts) {
+    setState(() {
+      _firstload = true;
+      // _posts = _posts + posts;
     });
+    // });
   }
 
   @override
@@ -75,33 +78,37 @@ class MyHomePageState extends State<MyHomePage> {
       ),
       body: Visibility(
         visible: _firstload,
-        child: ListView.builder(
-          shrinkWrap: true,
-          controller: _scrollController,
-          itemCount: _loadMore ? _posts.length + 1 : _posts.length,
-          itemBuilder: (BuildContext context, int index) {
-            Post post = _posts[index];
-            if (index < _posts.length) {
-              return ListTile(
-                leading: CircleAvatar(
-                  child: Image.network(
-                    '${!post.thumbnail.contains(".jpg") ? "http://via.placeholder.com/300" : post.thumbnail}',
-                    scale: 0.2,
-                  ),
-                ),
-                title: Text('Title: ${post.title} by ${post.author}'),
-                subtitle: Text(
-                  'Subreddit: ${post.subreddit} with ${post.ups} upvotes',
-                ),
+        child: StreamBuilder<Object>(
+            stream: postBloc.postStream,
+            builder: (context, snapshot) {
+              return ListView.builder(
+                shrinkWrap: true,
+                controller: _scrollController,
+                itemCount: _loadMore ? _posts.length + 1 : _posts.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Post post = _posts[index];
+                  if (index < _posts.length) {
+                    return ListTile(
+                      leading: CircleAvatar(
+                        child: Image.network(
+                          '${!post.thumbnail.contains(".jpg") ? "http://via.placeholder.com/300" : post.thumbnail}',
+                          scale: 0.2,
+                        ),
+                      ),
+                      title: Text('Title: ${post.title} by ${post.author}'),
+                      subtitle: Text(
+                        'Subreddit: ${post.subreddit} with ${post.ups} upvotes',
+                      ),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                },
               );
-            } else {
-              return Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Center(child: CircularProgressIndicator()),
-              );
-            }
-          },
-        ),
+            }),
         replacement: Center(child: CircularProgressIndicator()),
       ),
     );
