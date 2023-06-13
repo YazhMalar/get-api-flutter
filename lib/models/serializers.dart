@@ -5,7 +5,7 @@ import './reddit.dart';
 
 part 'serializers.g.dart';
 
-@SerializersFor(const [
+@SerializersFor([
   Reddit,
 ])
 final Serializers serializers =

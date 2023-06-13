@@ -5,9 +5,9 @@ var i = 0;
 
 class RemoteServices {
   Future<List<Post>?> getPost() async {
-    var Client = http.Client();
+    var client = http.Client();
     var uri = Uri.parse('https://jsonplaceholder.typicode.com/comments');
-    var response = await Client.get(uri);
+    var response = await client.get(uri);
     if (response.statusCode == 200) {
       var json = response.body;
       return postFromJson(json);
@@ -24,14 +24,14 @@ class RemoteServices {
         "body": "dodge challenger",
         "name": "Yazhini",
       });
-      print(response.statusCode);
-      print(response.body);
+      // print(response.statusCode);
+      // print(response.body);
       if (response.statusCode == 201) {
-        print(response.body.runtimeType);
+        // print(response.body.runtimeType);
         return response.body;
       }
     } catch (e) {
-      print("error $e");
+      // print("error $e");
     }
   }
 }

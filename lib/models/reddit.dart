@@ -8,7 +8,7 @@ abstract class Reddit implements Built<Reddit, RedditBuilder> {
   Children get data;
 
   Reddit._();
-  factory Reddit([updates(RedditBuilder b)]) = _$Reddit;
+  factory Reddit([Function(RedditBuilder b) updates]) = _$Reddit;
   static Serializer<Reddit> get serializer => _$redditSerializer;
 }
 
@@ -16,7 +16,7 @@ abstract class Children implements Built<Children, ChildrenBuilder> {
   BuiltList<Data> get children;
 
   Children._();
-  factory Children([updates(ChildrenBuilder b)]) = _$Children;
+  factory Children([Function(ChildrenBuilder b) updates]) = _$Children;
   static Serializer<Children> get serializer => _$childrenSerializer;
 }
 
@@ -24,7 +24,7 @@ abstract class Data implements Built<Data, DataBuilder> {
   Post get data;
 
   Data._();
-  factory Data([updates(DataBuilder b)]) = _$Data;
+  factory Data([Function(DataBuilder b) updates]) = _$Data;
   static Serializer<Data> get serializer => _$dataSerializer;
 }
 
@@ -38,6 +38,6 @@ abstract class Post implements Built<Post, PostBuilder> {
   int get ups;
 
   Post._();
-  factory Post([updates(PostBuilder b)]) = _$Post;
+  factory Post([Function(PostBuilder b) updates]) = _$Post;
   static Serializer<Post> get serializer => _$postSerializer;
 }

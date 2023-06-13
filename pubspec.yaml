@@ -39,6 +39,7 @@ dependencies:
   built_value: ^8.6.1
   built_collection: ^5.1.1
   built_value_generator: ^8.6.1
+  shared_preferences: ^2.1.2
 
 dev_dependencies:
   flutter_test:
