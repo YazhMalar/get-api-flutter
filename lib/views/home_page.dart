@@ -1,120 +1,50 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import '../models/post.dart';
-import '../services/remote_services.dart';
+import '../models/reddit.dart';
+import '../models/api.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
+class MyHomePage extends StatefulWidget {
   @override
-  State<HomePage> createState() => _HomePageState();
+  MyHomePageState createState() => MyHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  List<Post>? post = [];
-  var isLoaded = false;
+class MyHomePageState extends State<MyHomePage> {
+  List<Post> _posts = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    getData();
-    final post = Post(
-      postId: 2,
-      name: "iniyan",
-      email: "kausik@gmail.tamil",
-      body: "hello there",
-      id: 510,
-    );
-    final json = post.toJson();
-    print('JSON: ${post.toJson()}');
-
-    final newPost = Post.fromJson(json);
-    print(newPost);
+    getReddit().then((posts) {
+      setState(() {
+        _posts = posts;
+      });
+    });
   }
 
-  getData() async {
-    post = (await RemoteServices().getPost())!;
-    if (post != null) {
-      setState(() {
-        isLoaded = true;
-      });
-    }
-  }
-
-  postData() async {
-    try {
-      var response = await RemoteServices().postData();
-      Map<String, dynamic> customResponse = jsonDecode(response);
-      customResponse["postId"] = int.parse(customResponse["postId"]);
-      var newPost = Post.fromJson(customResponse);
-      setState(() {
-        post!.insert(0, newPost);
-      });
-    } catch (e) {
-      print("error: $e");
-    }
+  List<Widget> buildListTiles() {
+    return _posts
+        .map((post) => ListTile(
+              leading: CircleAvatar(
+                  child: Image.network(
+                '${!post.thumbnail.contains(".jpg") ? "http://via.placeholder.com/300" : post.thumbnail}',
+                scale: 0.2,
+              )),
+              title: Text('Title: ${post.title} by ${post.author}'),
+              subtitle: Text(
+                'Subreddit: ${post.subreddit} with ${post.ups} upvotes',
+              ),
+            ))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Posts"),
-        backgroundColor: Colors.amber,
+        title: Text('Posts'),
       ),
-      body: Visibility(
-        visible: isLoaded,
-        child: ListView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.only(top: 20),
-          itemBuilder: (context, index) {
-            return Container(
-              padding:
-                  EdgeInsets.only(left: 20).add(EdgeInsets.only(bottom: 5)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Text(post![index].id.toString()),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            post![index].email,
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            post![index].body,
-                            style: TextStyle(
-                              fontSize: 6,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            );
-          },
-          itemCount: post?.length,
-        ),
-        replacement: Center(
-          child: CircularProgressIndicator(color: Colors.black),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => postData(),
-        child: Icon(Icons.ac_unit_sharp),
+      body: ListView(
+        shrinkWrap: true,
+        children: buildListTiles(),
       ),
     );
   }
