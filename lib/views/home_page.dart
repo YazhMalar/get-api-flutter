@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../models/post.dart';
 import '../services/remote_services.dart';
+import 'login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,7 +39,7 @@ class _HomePageState extends State<HomePage> {
       customResponse["postId"] = int.parse(customResponse["postId"]);
       var newPost = Post.fromJson(customResponse);
       setState(() {
-        print(post![0]);
+        // print(post![0]);
         post!.insert(0, newPost);
       });
     } catch (e) {
@@ -50,6 +51,20 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: [
+          GestureDetector(
+            child: Icon(Icons.logout),
+            onTap: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+                (Route<dynamic> route) => false,
+              );
+            },
+          ),
+          Text("Logout"),
+        ],
         title: Text("Posts"),
         backgroundColor: Colors.amber,
       ),
@@ -94,16 +109,16 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           },
-          itemCount: post?.length,
+          itemCount: post?.length ?? 0,
         ),
         replacement: Center(
           child: CircularProgressIndicator(color: Colors.black),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => postData(),
-        child: Icon(Icons.ac_unit_sharp),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => postData(),
+      //   child: Icon(Icons.ac_unit_sharp),
+      // ),
     );
   }
 }
